@@ -1,36 +1,142 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🤖 Chatbot Inteligente com Integração de IA (Gemini)
 
-## Getting Started
+Este projeto é um chatbot interativo desenvolvido com **Next.js**, que simula um assistente inteligente capaz de responder perguntas, interagir com o usuário e direcioná-lo para diferentes áreas do sistema, como portfólio, tecnologias e contato.
 
-First, run the development server:
+## 🚀 Funcionalidades
+
+* 💬 Chat interativo em tempo real
+* 🧠 Integração com API de IA (Google Gemini)
+* ⚡ Sistema híbrido (respostas locais + IA) para melhor performance
+* 🎯 Detecção de intenções (ex: "portfólio", "contato", "tecnologias")
+* 🔗 Redirecionamento automático para páginas externas
+* 🎬 Animações de carregamento simulando processamento de IA
+* 🎨 Interface moderna e responsiva
+
+## 🧩 Arquitetura
+
+O projeto utiliza uma abordagem híbrida:
+
+* **Regras locais**: para comandos conhecidos (evita consumo de API)
+* **IA (Gemini)**: para perguntas abertas e respostas dinâmicas
+
+Isso garante:
+
+* melhor desempenho
+* economia de requisições
+* maior controle sobre a aplicação
+
+## 🛠️ Tecnologias utilizadas
+
+* Next.js
+* JavaScript / TypeScript
+* API Google Gemini
+* CSS / UI moderna
+
+## 💡 Objetivo
+
+O objetivo deste projeto é criar uma experiência diferenciada de portfólio, onde o usuário interage com um assistente virtual em vez de navegar por um site tradicional.
+
+## 🌐 Demonstração
+
+Em breve...
+
+## 📌 Observações
+
+Este projeto foi desenvolvido com foco em:
+
+* experiência do usuário (UX)
+* criatividade
+* arquitetura moderna
+* integração com inteligência artificial
+
+---
+
+## ⚙️ Como executar o projeto
+
+### 📌 Pré-requisitos
+
+Antes de começar, você precisa ter instalado:
+
+* Node.js (versão 18 ou superior)
+* Gerenciador de pacotes (npm, yarn ou pnpm)
+* Conta com chave de API do Google Gemini
+
+---
+
+### 🔑 Configuração da API
+
+Crie um arquivo `.env.local` na raiz do projeto e adicione sua chave:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+---
+
+### 📦 Instalação
+
+Clone o repositório e instale as dependências:
+
+```bash
+git clone https://github.com/seu-usuario/seu-repositorio.git
+cd seu-repositorio
+npm install
+```
+
+---
+
+### ▶️ Executando o projeto
+
+Para rodar em ambiente de desenvolvimento:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O projeto estará disponível em:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+### 🏗️ Build para produção
 
-To learn more about Next.js, take a look at the following resources:
+Para gerar a versão de produção:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 📁 Estrutura básica
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+src/
+ ├── app/
+ ├── components/
+ ├── lib/
+ ├── data/
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+### ⚠️ Observação importante
+
+O sistema utiliza uma abordagem híbrida:
+
+* Respostas simples são tratadas localmente
+* Perguntas mais complexas são enviadas para a IA
+
+Isso evita consumo desnecessário da API e melhora a performance.
+
+---
+
+### 🚀 Dica
+
+Caso a API atinja o limite de requisições, o sistema continuará funcionando com respostas locais e redirecionamentos.
+
+💻 Desenvolvido por Claudir Pereira
