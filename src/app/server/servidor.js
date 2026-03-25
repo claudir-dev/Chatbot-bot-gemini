@@ -9,8 +9,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// 1. Verifique se a chave existe antes de começar
-const apiKey = process.env.Google_api; // Use o nome EXATO que está no seu .env
+const apiKey = process.env.Google_api; 
 
 if (!apiKey) {
     console.error("❌ ERRO: Chave 'Google_api' não encontrada no .env");
@@ -20,24 +19,23 @@ const genAI = new GoogleGenerativeAI(apiKey)
 
 app.post('/api/google', async (req, res) => {
     const { texto } = req.body
-    
+    console.log(texto)
     try {
         if (!texto) {
             return res.status(400).json({ error: "Texto é obrigatório" })
         }
 
-        // 2. Inicialize o modelo DENTRO da rota ou certifique-se que ele existe
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
-        // Verificação de segurança para o erro que você recebeu:
         if (!model) {
             throw new Error("Falha ao inicializar o modelo Gemini.");
         }
 
-        // 3. Chamada simplificada
         const result = await model.generateContent(texto)
         const response = await result.response
         const text = response.text()
+
+        console.log(text)
 
         return res.json({ text })
 

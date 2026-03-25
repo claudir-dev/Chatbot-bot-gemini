@@ -4,16 +4,26 @@ import Navbar from "./components/navabar";
 import Button from "./components/button"
 import Input from "./components/input";
 import CardErro from "./components/card_error";
+import CardUser from "./components/card_user";
+import CardRoot from "./components/card_root";
 import { useEffect, useState } from "react";
 export default function Home() {
   const [texto, settexto] = useState('')
-  const [messagens, setmessagens] = useState()
+  const [messagens, setmessagens] = useState('')
   const [desabilita, setdesabilita] = useState(false)
   const [invalido, setinvalido] = useState(false)
+  const [user, setuser] = useState()
   
   const server = async (e? : React.BaseSyntheticEvent) => {
     if(e) {
       e.preventDefault()
+    }
+
+    if(!texto) {
+      setmessagens('Dado invalido')
+      setinvalido(true)
+      setTimeout(() => {setinvalido(false)}, 6000)
+      return
     }
 
     const intents = {
@@ -66,6 +76,7 @@ export default function Home() {
       } catch (error) {
         console.log('Erro ao chama a API do gemini')
         setTimeout(() => {
+          setmessagens('Erro interno no servidor')
           setinvalido(true)
         },6000)
         setinvalido(false)
@@ -77,12 +88,15 @@ export default function Home() {
   return (
    <div className="h-screen flex flex-col">
       <Navbar></Navbar>
-      <CardErro></CardErro>
+      {invalido && (
+        <CardErro>{messagens}</CardErro>
+      )}
       <div className=" flex flex-1 justify-center items-center sm:mt-80 mt-60 md:mt-60 z-0 relative ">
           <p className="text-white text-center sm:text-5xl text-4xl font-semibold mx-2">Seja bem vindo!! <span className=" block mt-2 text-blue-400 sm: text-4xl">pequeno gafanhoto</span></p>
       </div>
-      <div className="flex-1 overflow-y-auto z-0 p-4 pb-24">
-
+      <div className="flex-1 overflow-y-auto scroll-hidden z-0 space-y-8 m-2 p-4 pb-24">
+        <CardUser>ola</CardUser>
+        <CardRoot>ola</CardRoot>
       </div>
       <div className="sm:-space-x-10 -space-x-4 lg:-space-x-160 fixed sm:mb-15 mb-5 flex justify-around items-center bottom-0 w-full ">
         <Input value={texto} onChange={(e) => settexto(e.target.value)}></Input>
