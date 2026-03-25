@@ -8,23 +8,38 @@ import CardUser from "./components/card_user";
 import CardRoot from "./components/card_root";
 import { useEffect, useState } from "react";
 export default function Home() {
+
   const [texto, settexto] = useState('')
   const [messagens, setmessagens] = useState('')
   const [desabilita, setdesabilita] = useState(false)
   const [invalido, setinvalido] = useState(false)
-  const [user, setuser] = useState()
+  const [rootMsg, setrootMsg] = useState('')
+  const [user, setuser] = useState<Mensagem[]>([])
+
+    type Mensagem = {
+      texto:string, tipo: 'user' | 'rot'
+    }
   
   const server = async (e? : React.BaseSyntheticEvent) => {
     if(e) {
       e.preventDefault()
     }
 
-    if(!texto) {
+    if(!texto.trim()) {
       setmessagens('Dado invalido')
       setinvalido(true)
       setTimeout(() => {setinvalido(false)}, 6000)
       return
     }
+
+    setuser((prev) => [
+      ...prev, {
+        texto: texto, tipo: 'user'
+
+      }
+    ])
+
+    settexto('')
 
     const intents = {
       portfolio: [
@@ -68,18 +83,27 @@ export default function Home() {
           headers: {
             'Content-type' : 'application/json'
           },
-          body: JSON.stringify({texto})
+          body: JSON.stringify({})
         })
 
         const response = await req.json()
         console.log(response)
+        setrootMsg(response.text)
+
+        setuser((prev) => [
+          ...prev, {
+            texto: rootMsg, tipo: 'rot'
+          }
+        ])
       } catch (error) {
         console.log('Erro ao chama a API do gemini')
+
         setTimeout(() => {
           setmessagens('Erro interno no servidor')
           setinvalido(true)
         },6000)
         setinvalido(false)
+
       } finally {
         setdesabilita(false)
       }  
@@ -95,8 +119,12 @@ export default function Home() {
           <p className="text-white text-center sm:text-5xl text-4xl font-semibold mx-2">Seja bem vindo!! <span className=" block mt-2 text-blue-400 sm: text-4xl">pequeno gafanhoto</span></p>
       </div>
       <div className="flex-1 overflow-y-auto scroll-hidden z-0 space-y-8 m-2 p-4 pb-24">
-        <CardUser>ola</CardUser>
-        <CardRoot>ola</CardRoot>
+        {user.map((msg, index) => (
+          <div key={index} className={`${msg.tipo === 'user'? 'max-w-[75%] bg-blue-500 flex backdrop-blur-md justify-end rounded-2xl text-xl text-amber-50 break-all whitespace-pre-wrap p-4 ': 'bg-slate-800/80 max-w-[75%] break-all whitespace-pre-wrap rounded-2xl text-xl  text-amber-50 p-4 flex justify-start'} `}>
+            {msg.texto}
+          </div>
+        ))}
+        
       </div>
       <div className="sm:-space-x-10 -space-x-4 lg:-space-x-160 fixed sm:mb-15 mb-5 flex justify-around items-center bottom-0 w-full ">
         <Input value={texto} onChange={(e) => settexto(e.target.value)}></Input>
