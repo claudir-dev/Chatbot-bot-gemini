@@ -108,7 +108,7 @@ export default function Home() {
         const req = await fetch('https://chat-bot-api-544x.onrender.com/api/google', {
           method: 'POST',
           headers: {
-            'Content-type' : 'application/json'
+            'Content-Type' : 'application/json'
           },
           body: JSON.stringify({texto})
         })
