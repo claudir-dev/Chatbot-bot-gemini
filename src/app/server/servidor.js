@@ -26,7 +26,7 @@ app.post('/api/google', async (req, res) => {
             return res.status(400).json({ error: "Texto é obrigatório" })
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" })
 
         if (!model) {
             return res.status(500).json({error: "Falha ao inicializar o modelo Gemini."});

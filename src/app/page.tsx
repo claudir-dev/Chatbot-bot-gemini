@@ -4,6 +4,7 @@ import Navbar from "./components/navabar";
 import Button from "./components/button"
 import Input from "./components/input";
 import CardErro from "./components/card_error";
+import Carregar from "./components/animacao";
 import { useEffect, useRef, useState } from "react";
 export default function Home() {
 
@@ -14,19 +15,29 @@ export default function Home() {
   const [rootMsg, setrootMsg] = useState('')
   const [animacao, setanimacao] = useState(false)
   const [img, setimg] = useState(false)
+  const [carregando, setcarregando] = useState(true)
   const [user, setuser] = useState<Mensagem[]>([])
   const chatref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {setcarregando(false)},9000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    chatref.current?.scrollTo({
+      top: chatref.current.scrollHeight,
+      behavior: 'smooth'
+    })
+  },[user])
+
+  if(carregando) {
+    return <Carregar/>
+  }
 
     type Mensagem = {
       texto:string, tipo: 'user' | 'bot' | 'loading',
     }
-
-        useEffect(() => {
-        chatref.current?.scrollTo({
-          top: chatref.current.scrollHeight,
-          behavior: 'smooth'
-        })
-      },[user])
   
   const server = async (e? : React.BaseSyntheticEvent) => {
     if(e) {
@@ -84,7 +95,7 @@ export default function Home() {
     console.log(exist)
 
     if(exist) {
-      alert('ola')
+      
     } else {
       try {
         setimg(true)
@@ -150,9 +161,6 @@ export default function Home() {
           {user.map((msg, index) => (
             <div key={index} className={`${msg.tipo == 'user'? 'flex justify-end': 'flex justify-start'}`}>
 
-            
-
-
 
               {msg.tipo === 'loading' && (
                       
@@ -171,7 +179,7 @@ export default function Home() {
               )}
 
               {msg.tipo === 'bot' && (
-                <div>
+                <div className="flex">
                   <div>
                     <Image src='/icone.png' alt="icone bot" width={70} height={30}></Image>
                   </div>
@@ -187,7 +195,7 @@ export default function Home() {
           
         </div>
       </div>  
-      <div className="sm:-space-x-10 lg:-space-x-80 fixed sm:mb-15 mb-5 flex justify-around items-center bottom-0 w-full ">
+      <div className="sm:-space-x-10 lg:-space-x-150 fixed sm:mb-15 mb-5 flex justify-around items-center p-4 bottom-0 w-full ">
         <Input value={texto} onChange={(e) => settexto(e.target.value)}></Input>
         <Button disabled={desabilita} onClick={server} ></Button>
       </div>
