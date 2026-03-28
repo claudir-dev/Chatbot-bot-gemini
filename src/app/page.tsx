@@ -117,6 +117,12 @@ export default function Home() {
         console.log(response)
 
         if(!req.ok) {
+          console.log(response.error)
+          setuser((prev) => [
+            ...prev, {
+              texto: '', tipo: 'bot'
+            }
+          ])
           setmessagens('Erro interno no servidor! Estamos verificando...')
           setinvalido(true)
           setTimeout(() => {setinvalido(false)},6000)
@@ -148,56 +154,56 @@ export default function Home() {
 
   }
   return (
-   <div className="h-screen flex flex-col">
-      <Navbar></Navbar>
-      {invalido && (
-        <CardErro>{messagens}</CardErro>
-      )}
-      <div ref={chatref}  className="flex-1 overflow-y-auto scroll-hidden">
-        <div className=" flex justify-center items-center sm:mt-80 mt-80 md:mt-60 z-0 relative  ">
-            <p className="text-white text-center sm:text-5xl text-4xl font-semibold mx-2">Seja bem vindo!! <span className=" block mt-2 text-blue-400 sm: text-4xl">pequeno gafanhoto</span></p>
-        </div>
-        <div className="flex flex-col z-0 space-y-8 m-2 p-4 pb-24">
-          {user.map((msg, index) => (
-            <div key={index} className={`${msg.tipo == 'user'? 'flex justify-end': 'flex justify-start'}`}>
+   <div className="h-svh flex flex-col">
+    <Navbar></Navbar>
+    {invalido && (
+      <CardErro>{messagens}</CardErro>
+    )}
+    <div className=" flex justify-center items-center lg:mt-90 mt-72 md:mt-60 ">
+        <p className="text-white text-center sm:text-5xl text-4xl font-semibold mx-2">Seja bem vindo!! <span className=" block mt-2 text-blue-400 sm: text-4xl">pequeno gafanhoto</span></p>
+    </div>
+    <div ref={chatref}  className="flex flex-col space-y-8 m-2 p-4 pb-24 overflow-y-auto scroll-hidden">
+      {user.map((msg, index) => (
+        <div key={index} className={`${msg.tipo == 'user'? 'flex justify-end': 'flex justify-start'}`}>
 
 
-              {msg.tipo === 'loading' && (
-                      
-                  <div className="flex items-center justify-center space-x-2 ">
-                    <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50 [animation-delay:-0.3s]"></span>
-                    <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50 [animation-delay:-0.15s]"></span>
-                    <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50"></span>
-                  </div>
-                    
-              )}
+          {msg.tipo === 'loading' && (
+                  
+              <div className="flex items-center justify-center space-x-2 ">
+                <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50 [animation-delay:-0.3s]"></span>
+                <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50 [animation-delay:-0.15s]"></span>
+                <span className="h-3 w-3 animate-bounce duration-700 rounded-full bg-blue-50"></span>
+              </div>
+                
+          )}
 
-              {msg.tipo === 'user' && (
-                <div className="bg-blue-500 ml-auto max-w-[75%] p-4 rounded-2xl text-xl break-all whitespace-pre-wrap text-amber-50">
-                  {msg.texto}
-                </div>
-              )}
+          {msg.tipo === 'user' && (
+            <div className="bg-blue-500 ml-auto max-w-[75%] p-4 rounded-2xl text-xl break-all whitespace-pre-wrap text-amber-50">
+              {msg.texto}
+            </div>
+          )}
 
-              {msg.tipo === 'bot' && (
-                <div className="flex">
-                  <div>
-                    <Image src='/icone.png' alt="icone bot" width={70} height={30}></Image>
-                  </div>
-                  <div className="bg-slate-800 p-4 rounded-2xl max-w-[75%] text-xl break-all whitespace-pre-wrap text-amber-50">
-                    {msg.texto}
-                  </div>
-                </div>
+          {msg.tipo === 'bot' && (
+            <div className="flex -ml-3">
+              <div>
+                <Image src='/icone.png' alt="icone bot" width={70} height={30}></Image>
+              </div>
+              <div className="bg-slate-800 p-4 rounded-2xl max-w-[75%] text-xl break-all whitespace-pre-wrap text-amber-50">
+                {msg.texto}
+              </div>
+            </div>
 
-              )}
-            </div>   
-          ))}
-
-          
-        </div>
-      </div>  
-      <div className="sm:-space-x-10 lg:-space-x-150 fixed sm:mb-15 mb-5 flex justify-around items-center p-4 bottom-0 w-full ">
+          )}
+        </div>   
+      ))}
+      
+    </div> 
+      <div className="max-w-4xl lg:gap-14 lg:mb-14 mx-auto fixed mb-1 flex self-center gap-7 items-center p-4 bottom-0 ">
         <Input value={texto} onChange={(e) => settexto(e.target.value)}></Input>
         <Button disabled={desabilita} onClick={server} ></Button>
+      </div>
+      <div className="hidden fixed self-center items-center lg:block bottom-0">
+          <p className="">© {new Date().getFullYear()} Claudir Dev — Todos os direitos reservados </p>
       </div>
    </div>
   )
