@@ -125,7 +125,7 @@ export default function Home() {
           headers: {
             'Content-Type' : 'application/json'
           },
-          body: JSON.stringify({})
+          body: JSON.stringify({texto})
         })
 
         const response = await req.json()
