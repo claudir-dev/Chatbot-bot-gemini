@@ -14,7 +14,6 @@ export default function Home() {
   const [invalido, setinvalido] = useState(false)
   const [rootMsg, setrootMsg] = useState('')
   const [animacao, setanimacao] = useState(false)
-  const [img, setimg] = useState(false)
   const [carregando, setcarregando] = useState(true)
   const [saldacao, setsaldacao] = useState(true)
   const [render, setrender] = useState(true)
@@ -115,7 +114,6 @@ export default function Home() {
       
     } else {
       try {
-        setimg(true)
         setuser((prev) => [
           ...prev, {
             texto: '', tipo: 'loading', 
@@ -194,7 +192,7 @@ export default function Home() {
             )}
 
             {msg.tipo === 'user' && (
-              <div className="bg-blue-500 ml-auto max-w-[75%] p-4 rounded-2xl text-xl break-all whitespace-pre-wrap text-amber-50">
+              <div className="bg-blue-500 ml-auto max-w-[75%] p-4 rounded-2xl text-xl break-all sm:text-wrap whitespace-pre-wrap text-amber-50">
                 {msg.texto}
               </div>
             )}
@@ -204,7 +202,7 @@ export default function Home() {
                 <div>
                   <Image src='/icone.png' alt="icone bot" width={70} height={30}></Image>
                 </div>
-                <div className="bg-slate-800 p-4 rounded-2xl max-w-[75%] text-xl break-all whitespace-pre-wrap text-amber-50">
+                <div className="bg-slate-800 p-4 rounded-2xl max-w-[75%] text-xl break-all sm:text-wrap whitespace-pre-wrap text-amber-50">
                   {msg.texto}
                 </div>
               </div>
