@@ -60,5 +60,4 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   overflow-y: hidden;
-  background-attachment: fixed;
 }
