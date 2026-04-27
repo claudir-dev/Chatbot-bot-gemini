@@ -73,9 +73,9 @@ export default function Home() {
   }, [card])
 
 useEffect(() => {
-  let aparecer
-  let sumir
-  let remover
+  let aparecer: ReturnType<typeof setTimeout>;
+  let sumir: ReturnType<typeof setTimeout>;
+  let remover: ReturnType<typeof setTimeout>; 
 
   if (audio) {
     setCardativo(true)
