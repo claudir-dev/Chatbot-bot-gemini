@@ -5,8 +5,13 @@ import Button from "./components/button"
 import Input from "./components/input";
 import CardErro from "./components/card_error";
 import Carregar from "./components/animacao";
-import { CardAudio } from "./components/card_audio";
+import Add from "./components/add";
+import Ativo from "./components/card_ativo";
+import Desativado from "./components/card_desativo";
 import { use, useEffect, useRef, useState } from "react";
+import { FaX } from "react-icons/fa6";
+import { constants } from "buffer";
+
 export default function Home() {
 
   const [texto, settexto] = useState('')
@@ -19,7 +24,12 @@ export default function Home() {
   const [saldacao, setsaldacao] = useState(true)
   const [render, setrender] = useState(true)
   const [rolagem, setrolagem] = useState(false)
+  const [transion, settransion] = useState(false)
   const [audio, setaudio] = useState(false)
+  const [ativoVisible, setAtivoVisible] = useState(false)
+  const [desativadoVisible, setDesativadoVisible] = useState(false)
+  const [Cardativo, setCardativo] = useState(false)
+  const [desativado, setdesativado] = useState(false)
   const [card, setcard] = useState(false)
   const [user, setuser] = useState<Mensagem[]>([])
   const chatref = useRef<HTMLDivElement>(null)
@@ -46,18 +56,66 @@ export default function Home() {
     } 
   },[saldacao])
 
+  const FecharCard = () => {
+    settransion(false)
+    setcard(false)
+  }
+
   useEffect(() => {
     if(card) {
-      setaudio(false)
-      const inter = setTimeout(() => {
-        setaudio(true)
-      },100)
+      settransion(false)
+      const interval = setTimeout(() => {
+        settransion(true)
+      },400)
 
-      return () => clearTimeout(inter)
-    } else {
-      setaudio(false)
+      return () => clearTimeout(interval)
     }
-  },[card])
+  }, [card])
+
+useEffect(() => {
+  let aparecer
+  let sumir
+  let remover
+
+  if (audio) {
+    setCardativo(true)
+    setAtivoVisible(false)
+    aparecer = setTimeout(() => {
+      setAtivoVisible(true)
+    }, 10)
+
+    sumir = setTimeout(() => {
+      setAtivoVisible(false)
+      setTimeout(() => {
+        setCardativo(false)
+      }, 700)
+
+    }, 3000) // tempo visível
+  } else {
+    setdesativado(true)
+    setDesativadoVisible(false)
+    aparecer = setTimeout(() => {
+      setDesativadoVisible(true)
+    }, 10)
+
+    sumir = setTimeout(() => {
+      setDesativadoVisible(false)
+
+      remover = setTimeout(() => {
+        setdesativado(false)
+      }, 700)
+
+    }, 3000) // tempo visível
+  }
+
+  return () => {
+    clearTimeout(aparecer)
+    clearTimeout(sumir)
+    clearTimeout(remover)
+  }
+}, [audio])
+
+
 
   if(carregando) {
     return <Carregar/>
@@ -67,10 +125,22 @@ export default function Home() {
       texto:string, tipo: 'user' | 'bot' | 'loading' | 'error',
     }
 
-  const MostrarCard = () => {
-    setcard(true)
-    return
-  } 
+  
+
+  const ReproduzirTexto = (textoAudio: string) => {
+   if(audio) {
+      const mensagem = textoAudio.replace(/\*\*/g, '').replace(/\p{Extended_Pictographic}/gu, '').trim()
+      const utterance  = new SpeechSynthesisUtterance(mensagem)
+      utterance.rate = 2
+      utterance.pitch = 1
+      speechSynthesis.speak(utterance)
+
+      return utterance
+    }
+    else {
+      return
+    }
+  }
   
   const server = async (e? : React.BaseSyntheticEvent) => {
 
@@ -95,9 +165,8 @@ export default function Home() {
 
       }
     ])
-
-    MostrarCard()
     
+  
     settexto('')
 
     const intents = {
@@ -150,12 +219,14 @@ export default function Home() {
           headers: {
             'Content-Type' : 'application/json'
           },
-          body: JSON.stringify({})
+          body: JSON.stringify({texto})
         })
-
 
         const response = await req.json()
         console.log(response)
+        const textoAudio = response.text
+
+        ReproduzirTexto(textoAudio)
 
         if(!req.ok) {
           setuser((prev) => [
@@ -191,6 +262,7 @@ export default function Home() {
     }
 
   }
+
   return (
    <div ref={chatref} className={`h-svh flex flex-col ${rolagem? 'overflow-y-auto scroll-hidden' : ''}`}>
     <Navbar></Navbar>
@@ -198,8 +270,34 @@ export default function Home() {
       <CardErro>{messagens}</CardErro>
     )}
 
+    {Cardativo && (
+      <Ativo className={`transition-all duration-700 ease-out ${ativoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-10'}`}></Ativo>
+    )}
+    {desativado && (
+      <Desativado className={`transition-all duration-700 ease-out ${desativadoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-10'}`}></Desativado>
+    )}
+
     {card && (
-      <CardAudio className={`transition-all duration-500 ease-out ${audio ? 'opacity-100 translate-y-0': 'opacity-0 translate-y-5 pointer-events-none'}`}></CardAudio>
+      <div className={`fixed font-sans lg:left-110 lg:bottom-10 bg-slate-900 rounded-2xl left-3 bottom-10 w-70 transition-all duration-400 ease-out p-8 z-50 ${transion? 'opacity-100 scale-100 translate-y-0': 'opacity-0 scale-90 translate-y-10'}`}>
+        <div className="relative left-53  -top-4">
+          <FaX className="cursor-pointer hover:scale-115 transition-all duration-300" onClick={FecharCard}></FaX>
+        </div>
+        <div >
+          <div className="flex justify-center rounded-2xl bg-indigo-950 p-5 gap-2.5 mb-4 items-center">
+            <label className="font-semibold">Habilitar audio</label>
+              <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" checked={audio} onChange={(e) => setaudio(e.target.checked)} className="sr-only peer" />
+
+              <div className="w-12 h-7 bg-gray-500 rounded-full transition-colors duration-300 peer-checked:bg-green-500"></div>
+
+              <span className="absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-all duration-300 peer-checked:translate-x-5"></span>
+            </label>
+          </div>
+          <div className="text-center">
+            <p>Habilitando essa função, a IA responderá com áudio</p>
+          </div>
+        </div>
+      </div>
     )}
 
       {render && (
@@ -244,9 +342,10 @@ export default function Home() {
  
       
     </div> 
-      <div className="max-w-4xl lg:gap-14 lg:mb-14 mx-auto fixed mb-1 flex self-center gap-7 items-center p-4 bottom-0 ">
+      <div className=" max-w-4xl lg:gap-14 lg:mb-14 mx-auto fixed z-0 mb-1 flex self-center gap-7 items-center p-4 bottom-0 ">
+        <Add aoClicar={MostraCard => (setcard(true))}></Add>
         <Input value={texto} onChange={(e) => settexto(e.target.value)}></Input>
-        <Button disabled={desabilita} onClick={server} ></Button>
+        <Button className="lg:b-7" disabled={desabilita} onClick={server} ></Button>
       </div>
       <div className="hidden fixed self-center items-center lg:block bottom-0">
           <p className="">© {new Date().getFullYear()} Claudir Dev — Todos os direitos reservados </p>
