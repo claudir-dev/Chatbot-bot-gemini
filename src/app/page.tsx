@@ -33,6 +33,7 @@ export default function Home() {
   const [card, setcard] = useState(false)
   const [user, setuser] = useState<Mensagem[]>([])
   const chatref = useRef<HTMLDivElement>(null)
+  const timerSumir = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {setcarregando(false)},9000)
@@ -58,7 +59,9 @@ export default function Home() {
 
   const FecharCard = () => {
     settransion(false)
-    setcard(false)
+    setTimeout(() => {
+      setcard(false)
+    },300)
   }
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export default function Home() {
       settransion(false)
       const interval = setTimeout(() => {
         settransion(true)
-      },400)
+      },300)
 
       return () => clearTimeout(interval)
     }
@@ -75,46 +78,59 @@ export default function Home() {
 useEffect(() => {
   let aparecer: ReturnType<typeof setTimeout>;
   let sumir: ReturnType<typeof setTimeout>;
-  let remover: ReturnType<typeof setTimeout>; 
+  let remover: ReturnType<typeof setTimeout>;
+
+  // --- REGRA DE OURO: LIMPEZA TOTAL NO INÍCIO DO EFEITO ---
+  if (timerSumir.current) clearTimeout(timerSumir.current);
 
   if (audio) {
-    setCardativo(true)
-    setAtivoVisible(false)
+    // 1. Mata o card "desativado" imediatamente para não sobrepor
+    setdesativado(false);
+    setDesativadoVisible(false);
+
+    // 2. Inicia o card "ativo"
+    setCardativo(true);
+    setAtivoVisible(false);
+
     aparecer = setTimeout(() => {
-      setAtivoVisible(true)
-    }, 10)
+      setAtivoVisible(true);
+    }, 10);
 
-    sumir = setTimeout(() => {
-      setAtivoVisible(false)
-      setTimeout(() => {
-        setCardativo(false)
-      }, 700)
-
-    }, 3000) // tempo visível
-  } else {
-    setdesativado(true)
-    setDesativadoVisible(false)
-    aparecer = setTimeout(() => {
-      setDesativadoVisible(true)
-    }, 10)
-
-    sumir = setTimeout(() => {
-      setDesativadoVisible(false)
-
+    timerSumir.current = setTimeout(() => {
+      setAtivoVisible(false);
       remover = setTimeout(() => {
-        setdesativado(false)
-      }, 700)
+        setCardativo(false);
+      }, 700);
+    }, 3000);
 
-    }, 3000) // tempo visível
+  } else {
+    // 1. Mata o card "ativo" imediatamente
+    setCardativo(false);
+    setAtivoVisible(false);
+
+    // 2. Inicia o card "desativado"
+    setdesativado(true);
+    setDesativadoVisible(false);
+
+    aparecer = setTimeout(() => {
+      setDesativadoVisible(true);
+    }, 10);
+
+    sumir = setTimeout(() => {
+      setDesativadoVisible(false);
+      remover = setTimeout(() => {
+        setdesativado(false);
+      }, 700);
+    }, 3000);
   }
 
   return () => {
-    clearTimeout(aparecer)
-    clearTimeout(sumir)
-    clearTimeout(remover)
-  }
-}, [audio])
-
+    clearTimeout(aparecer);
+    clearTimeout(sumir);
+    clearTimeout(remover);
+    if (timerSumir.current) clearTimeout(timerSumir.current);
+  };
+}, [audio]);
 
 
   if(carregando) {
@@ -271,14 +287,14 @@ useEffect(() => {
     )}
 
     {Cardativo && (
-      <Ativo className={`transition-all duration-700 ease-out ${ativoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-10'}`}></Ativo>
+      <Ativo className={` transition-all will-change-transform duration-700 ease-out ${ativoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-5'}`}></Ativo>
     )}
     {desativado && (
-      <Desativado className={`transition-all duration-700 ease-out ${desativadoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-10'}`}></Desativado>
+      <Desativado className={` transition-all will-change-transform duration-700 ease-out ${desativadoVisible? 'opacity-100 scale-100 translate-y-0':'opacity-0 scale-80 translate-y-5'}`}></Desativado>
     )}
 
     {card && (
-      <div className={`fixed font-sans lg:left-110 lg:bottom-10 bg-slate-900 rounded-2xl left-3 bottom-10 w-70 transition-all duration-400 ease-out p-8 z-50 ${transion? 'opacity-100 scale-100 translate-y-0': 'opacity-0 scale-90 translate-y-10'}`}>
+      <div className={`fixed font-sans lg:left-110 lg:bottom-10 bg-slate-900 rounded-2xl left-3 bottom-10 w-70 transition-all duration-300 ease-out p-8 z-50 ${transion? 'opacity-100 scale-100 translate-y-0': 'opacity-0 scale-90 translate-y-10'}`}>
         <div className="relative left-53  -top-4">
           <FaX className="cursor-pointer hover:scale-115 transition-all duration-300" onClick={FecharCard}></FaX>
         </div>
