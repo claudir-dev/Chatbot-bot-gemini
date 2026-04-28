@@ -294,7 +294,7 @@ useEffect(() => {
     )}
 
     {card && (
-      <div className={`fixed font-sans lg:left-110 lg:bottom-10 bg-slate-900 rounded-2xl left-3 bottom-10 w-70 transition-all duration-300 ease-out p-8 z-50 ${transion? 'opacity-100 scale-100 translate-y-0': 'opacity-0 scale-90 translate-y-10'}`}>
+      <div className={`fixed font-sans lg:left-83 lg:bottom-10 bg-slate-900 rounded-2xl left-3 bottom-10 w-70 transition-all duration-300 ease-out p-8 z-50 ${transion? 'opacity-100 scale-100 translate-y-0': 'opacity-0 scale-90 translate-y-10'}`}>
         <div className="relative left-53  -top-4">
           <FaX className="cursor-pointer hover:scale-115 transition-all duration-300" onClick={FecharCard}></FaX>
         </div>
