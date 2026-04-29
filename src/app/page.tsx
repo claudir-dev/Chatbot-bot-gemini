@@ -146,9 +146,11 @@ useEffect(() => {
   const ReproduzirTexto = (textoAudio: string) => {
    if(audio) {
       const mensagem = textoAudio.replace(/\*\*/g, '').replace(/\p{Extended_Pictographic}/gu, '').trim()
+      const vozes = speechSynthesis.getVoices()
       const utterance  = new SpeechSynthesisUtterance(mensagem)
       utterance.rate = 2
       utterance.pitch = 1
+      utterance.voice = vozes.find(voz => voz.lang.includes("pt-BR")) ?? null
       speechSynthesis.speak(utterance)
 
       return utterance
